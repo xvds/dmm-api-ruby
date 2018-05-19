@@ -10,6 +10,7 @@ require 'dmm/series'
 require 'dmm/maker'
 require 'dmm/error'
 require 'dmm/response'
+require 'dmm/version'
 
 module Dmm
   class Client
