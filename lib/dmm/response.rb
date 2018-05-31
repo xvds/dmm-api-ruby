@@ -58,7 +58,7 @@ module Dmm
           status: status,
           result_count: result_count,
           total_count: total_count.to_i,
-          first_position: first_position
+          first_position: first_position.to_i
         }
       end
 
