@@ -1,6 +1,6 @@
 module Dmm
   module Configurable
-    attr_accessor :api_id, :affiliate_id, :user_agent, :timeouts
+    attr_accessor :api_id, :affiliate_id, :user_agent, :timeouts, :debug
 
     class << self
       def keys
@@ -9,6 +9,7 @@ module Dmm
           affiliate_id
           user_agent
           timeouts
+          debug
         ]
       end
     end
@@ -16,15 +17,6 @@ module Dmm
     def configure
       yield self
     end
-
-    # Reset configuration options to default values
-    def reset!
-      Dmm::Configurable.keys.each do |key|
-        instance_variable_set(:"@#{key}", Octokit::Default.options[key])
-      end
-      self
-    end
-    alias setup reset!
 
     def same_options?(opts)
       opts.hash == options.hash

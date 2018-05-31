@@ -5,9 +5,11 @@ module Dmm
     def initialize(body, klass)
       @request = Request.new(body[:request])
       @result = Result.new(body[:result])
-      @elements = @result.send(klass.field).map do |element|
-        klass.new(element)
-      end
+      @elements = if @result.send(klass.field).nil?
+                    []
+                  else
+                    @result.send(klass.field).map { |element| klass.new(element) }
+                  end
     end
 
     def has_next?
@@ -55,7 +57,7 @@ module Dmm
         {
           status: status,
           result_count: result_count,
-          total_count: total_count,
+          total_count: total_count.to_i,
           first_position: first_position
         }
       end
@@ -71,6 +73,19 @@ module Dmm
           floor_code: floor_code
         }
       end
+    end
+
+    private
+
+    def respond_to_missing?(method_name, include_private = false)
+      elements.respond_to?(method_name, include_private)
+    end
+
+    def method_missing(method_name, *args, &block)
+      if elements.respond_to?(method_name)
+        return elements.send(method_name, *args, &block)
+      end
+      super
     end
   end
 end

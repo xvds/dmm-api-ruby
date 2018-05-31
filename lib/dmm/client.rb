@@ -54,8 +54,10 @@ module Dmm
     def perform_request(klass, options = {})
       path = klass.path
       uri = Addressable::URI.parse(path.start_with?('http') ? path : BASE_URL + path)
+      params = credentials.merge(options)
+      p(uri: uri.to_s, params: params) if debug
       response = http_client.headers(user_agent: user_agent)
-                            .public_send(:get, uri.to_s, params: credentials.merge(options))
+                            .public_send(:get, uri.to_s, params: params)
       response_body = response.body.empty? ? '' : underscore_and_symbolize_keys!(response.parse)
       fail_or_return_response(response.code, response_body, klass)
     end
@@ -88,6 +90,7 @@ module Dmm
     def fail_or_return_response(code, body, klass)
       raise Dmm::Error::ServerError, body if code >= 500
       raise Dmm::Error::ClientError, body if code >= 400
+      p body if debug
       Response.new body, klass
     end
 
