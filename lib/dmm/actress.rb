@@ -31,6 +31,7 @@ module Dmm
     attribute :cup, String
     attribute :waist, String
     attribute :hip, String
+    attribute :height, String
     attribute :birthday, Date
     attribute :blood_type, String
     attribute :hobby, String
